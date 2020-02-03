@@ -13,6 +13,7 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    FindDialog1: TFindDialog;
     FontDialog1: TFontDialog;
     MainMenu1: TMainMenu;
     Memo1: TMemo;
@@ -21,6 +22,8 @@ type
     MenuItem11: TMenuItem;
     MenuItem12: TMenuItem;
     MenuItem13: TMenuItem;
+    MenuItem14: TMenuItem;
+    MenuItem15: TMenuItem;
     MenuItem16: TMenuItem;
     MenuItem17: TMenuItem;
     MenuItem18: TMenuItem;
@@ -38,12 +41,16 @@ type
     OpenDialog1: TOpenDialog;
     PageSetupDialog1: TPageSetupDialog;
     PrintDialog1: TPrintDialog;
+    ReplaceDialog1: TReplaceDialog;
     SaveDialog1: TSaveDialog;
     StatusBar1: TStatusBar;
+    procedure FindDialog1Find(Sender: TObject);
     procedure MenuItem10Click(Sender: TObject);
     procedure MenuItem11Click(Sender: TObject);
     procedure MenuItem12Click(Sender: TObject);
     procedure MenuItem13Click(Sender: TObject);
+    procedure MenuItem14Click(Sender: TObject);
+    procedure MenuItem15Click(Sender: TObject);
     procedure MenuItem16Click(Sender: TObject);
     procedure MenuItem18Click(Sender: TObject);
     procedure MenuItem20Click(Sender: TObject);
@@ -55,6 +62,7 @@ type
     procedure MenuItem6Click(Sender: TObject);
     procedure MenuItem7Click(Sender: TObject);
     procedure MenuItem9Click(Sender: TObject);
+    procedure ReplaceDialog1Replace(Sender: TObject);
   private
 
   public
@@ -84,6 +92,28 @@ begin
   Memo1.CutToClipboard;
 end;
 
+procedure TForm1.FindDialog1Find(Sender: TObject);
+var
+  I, J, PosReturn, SkipChars: integer;
+begin
+  for I := 0 to Memo1.Lines.Count do
+  begin
+    PosReturn := Pos(FindDialog1.FindText, Memo1.Lines[I]);
+    if PosReturn <> 0 then { found! }
+    begin
+      SkipChars := 0;
+      for J := 0 to I - 1 do
+        SkipChars := SkipChars + Length(Memo1.Lines[J]);
+      SkipChars := SkipChars + (I * 2);
+      SkipChars := SkipChars + PosReturn - 1;
+      Memo1.SetFocus;
+      Memo1.SelStart := SkipChars;
+      Memo1.SelLength := Length(FindDialog1.FindText);
+      Break;
+    end;
+  end;
+end;
+
 procedure TForm1.MenuItem11Click(Sender: TObject);
 begin
   Memo1.CopyToClipboard;
@@ -97,6 +127,16 @@ end;
 procedure TForm1.MenuItem13Click(Sender: TObject);
 begin
   Memo1.ClearSelection;
+end;
+
+procedure TForm1.MenuItem14Click(Sender: TObject);
+begin
+  FindDialog1.Execute;
+end;
+
+procedure TForm1.MenuItem15Click(Sender: TObject);
+begin
+  ReplaceDialog1.Execute;
 end;
 
 procedure TForm1.MenuItem16Click(Sender: TObject);
@@ -178,6 +218,25 @@ end;
 procedure TForm1.MenuItem9Click(Sender: TObject);
 begin
   Memo1.Undo;
+end;
+
+procedure TForm1.ReplaceDialog1Replace(Sender: TObject);
+var
+  SelPos: integer;
+begin
+  with TReplaceDialog(Sender) do
+  begin
+    SelPos := Pos(FindText, Memo1.Lines.Text);
+    if SelPos > 0 then
+    begin
+      Memo1.SelStart := SelPos - 1;
+      Memo1.SelLength := Length(FindText);
+      Memo1.SelText := ReplaceText;
+    end
+    else
+      MessageDlg(Concat('Could not find "', FindText, '" in Memo1.'),
+        mtError, [mbOK], 0);
+  end;
 end;
 
 end.

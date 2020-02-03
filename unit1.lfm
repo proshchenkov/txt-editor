@@ -90,6 +90,16 @@ object Form1: TForm1
         ShortCut = 46
         OnClick = MenuItem13Click
       end
+      object MenuItem14: TMenuItem
+        Caption = 'Найти'
+        ShortCut = 16454
+        OnClick = MenuItem14Click
+      end
+      object MenuItem15: TMenuItem
+        Caption = 'Заменить'
+        ShortCut = 16456
+        OnClick = MenuItem15Click
+      end
       object MenuItem16: TMenuItem
         Caption = 'Выделить все'
         ShortCut = 16449
@@ -136,6 +146,18 @@ object Form1: TForm1
   end
   object PageSetupDialog1: TPageSetupDialog
     left = 120
+    top = 120
+  end
+  object FindDialog1: TFindDialog
+    OnFind = FindDialog1Find
+    left = 280
+    top = 168
+  end
+  object ReplaceDialog1: TReplaceDialog
+    Options = [frDown, frReplace, frReplaceAll, frHidePromptOnReplace]
+    OnFind = FindDialog1Find
+    OnReplace = ReplaceDialog1Replace
+    left = 280
     top = 120
   end
 end
